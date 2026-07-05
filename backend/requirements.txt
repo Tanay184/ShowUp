@@ -12,3 +12,4 @@ flask-dance==7.0.0
 pyotp==2.9.0
 gunicorn==21.2.0
 Flask-Migrate==4.0.5
+json-repair==0.27.0
