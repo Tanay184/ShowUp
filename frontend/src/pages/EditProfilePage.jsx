@@ -89,7 +89,7 @@ export default function EditProfilePage() {
           <p className="label-mono text-on-surface-variant mt-0.5">Update your public portfolio info</p>
         </div>
 
-        <div className="max-w-xl mx-auto p-6">
+        <div className="max-w-xl mx-auto px-4 sm:px-6 py-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Avatar */}
             <div>
@@ -129,7 +129,7 @@ export default function EditProfilePage() {
                 type="text"
                 value={form.name}
                 onChange={handleChange}
-                className="input-brutal"
+                className="input-brutal w-full"
                 placeholder="Your full name"
                 required
               />
@@ -143,7 +143,7 @@ export default function EditProfilePage() {
                 type="text"
                 value={form.college}
                 onChange={handleChange}
-                className="input-brutal"
+                className="input-brutal w-full"
                 placeholder="IIT Delhi, NIT Trichy..."
                 required
               />
@@ -211,7 +211,7 @@ export default function EditProfilePage() {
                 type="text"
                 value={form.skills}
                 onChange={handleChange}
-                className="input-brutal"
+                className="input-brutal w-full"
                 placeholder="React, Python, Tailwind, UI/UX..."
               />
             </div>
@@ -224,7 +224,7 @@ export default function EditProfilePage() {
                 rows={4}
                 value={form.bio}
                 onChange={handleChange}
-                className="input-brutal resize-none"
+                className="input-brutal w-full resize-none"
                 placeholder="Tell the world what you build, what you're learning, and what you're looking for..."
               />
             </div>
@@ -232,8 +232,8 @@ export default function EditProfilePage() {
             {/* Portfolio link */}
             <div className="border-2 border-ink p-4 bg-surface-container-low">
               <p className="label-mono mb-2">Your Portfolio Link</p>
-              <div className="flex items-center gap-2">
-                <code className="font-mono text-sm text-primary flex-1 truncate">
+              <div className="flex items-center gap-2 min-w-0">
+                <code className="font-mono text-sm text-primary flex-1 truncate min-w-0 block">
                   {window.location.origin}/u/{user?.id}
                 </code>
                 <button
@@ -263,11 +263,11 @@ export default function EditProfilePage() {
             )}
 
             {/* Actions */}
-            <div className="flex gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button
                 type="submit"
                 disabled={saving}
-                className="btn-primary flex-1 justify-center py-3.5"
+                className="btn-primary w-full sm:flex-1 justify-center py-3.5"
               >
                 {saving ? (
                   <>
@@ -284,7 +284,7 @@ export default function EditProfilePage() {
               <button
                 type="button"
                 onClick={() => navigate(`/u/${user?.id}`)}
-                className="btn-secondary py-3.5 px-5"
+                className="btn-secondary py-3.5 px-5 w-full sm:w-auto justify-center"
               >
                 View Portfolio
               </button>
