@@ -265,6 +265,8 @@ export default function Auth() {
 
   useEffect(() => () => clearInterval(timerRef.current), [])
 
+  const [devOtp, setDevOtp] = useState('')
+
   /* ── Step 1: Send OTP ── */
   const handleSendOtp = async (e) => {
     e?.preventDefault()
@@ -275,9 +277,17 @@ export default function Auth() {
     }
     setLoading(true)
     setError('')
+    setDevOtp('')
     try {
-      await apiFetch('/api/auth/send-otp', { email: trimmed })
-      setOtpDigits(['', '', '', '', '', ''])
+      const res = await apiFetch('/api/auth/send-otp', { email: trimmed })
+      // Free-tier Resend fallback: backend returns the OTP directly
+      if (res?.data?.dev_otp) {
+        const code = String(res.data.dev_otp)
+        setDevOtp(code)
+        setOtpDigits(code.split(''))
+      } else {
+        setOtpDigits(['', '', '', '', '', ''])
+      }
       startTimer()
       setStep('otp-code')
     } catch (err) {
@@ -356,9 +366,15 @@ export default function Auth() {
   const handleResend = async () => {
     setOtpDigits(['', '', '', '', '', ''])
     setError('')
+    setDevOtp('')
     setLoading(true)
     try {
-      await apiFetch('/api/auth/send-otp', { email: email.trim().toLowerCase() })
+      const res = await apiFetch('/api/auth/send-otp', { email: email.trim().toLowerCase() })
+      if (res?.data?.dev_otp) {
+        const code = String(res.data.dev_otp)
+        setDevOtp(code)
+        setOtpDigits(code.split(''))
+      }
       startTimer()
     } catch (err) {
       setError(err?.message || 'Failed to resend.')
@@ -527,6 +543,24 @@ export default function Auth() {
                 Code sent to <span style={{ color: T.textPrimary }}>{email}</span>
               </div>
 
+              {/* Dev/free-tier fallback: show banner when email couldn't be delivered */}
+              {devOtp && (
+                <div style={{
+                  background: '#2a2500',
+                  border: '1.5px solid #C8FF00',
+                  borderRadius: 2,
+                  padding: '10px 14px',
+                  marginBottom: 16,
+                  fontFamily: T.mono,
+                  fontSize: 11,
+                  color: '#C8FF00',
+                  letterSpacing: '0.05em',
+                  lineHeight: 1.6,
+                }}>
+                  ⚡ EMAIL DELIVERY LIMITED — Code auto-filled above. Just click VERIFY.
+                </div>
+              )}
+
               <div style={{ marginBottom: 12 }}>
                 <label style={labelStyle}>Verification Code</label>
                 <OTPInput value={otpDigits} onChange={setOtpDigits} />
@@ -557,6 +591,7 @@ export default function Auth() {
               </div>
 
               {error && <div style={{ ...errorStyle, marginBottom: 12 }}>{error}</div>}
+
 
               <button
                 className="accent-btn"
